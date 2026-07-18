@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Message For You ✨</title>
+    <style>
+        body {
+            background-color: #ffe6e6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Poppins', Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            overflow: hidden;
+        }
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 25px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 90%;
+            transition: all 0.5s ease;
+        }
+        h2 { color: #ff4d4d; margin-bottom: 20px; }
+        input {
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #ffb3b3;
+            border-radius: 12px;
+            outline: none;
+            text-align: center;
+            width: 80%;
+            margin-bottom: 20px;
+        }
+        button {
+            background-color: #ff4d4d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        button:hover { background-color: #cc0000; transform: scale(1.05); }
+        
+        /* Area teks cerita panjang */
+        .story-text {
+            font-size: 18px;
+            color: #444;
+            line-height: 1.6;
+            margin-bottom: 25px;
+            min-height: 100px;
+        }
+        
+        /* Menyembunyikan elemen sebelum waktunya */
+        .hidden { display: none; }
+        
+        /* Tombol Pilihan Akhir */
+        .btn-group {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+        .btn-yes { background-color: #2ecc71; }
+        .btn-yes:hover { background-color: #27ae60; }
+        .btn-no { background-color: #95a5a6; transition: 0.1s; }
+    </style>
+</head>
+<body>
+
+    <!-- KOTAK UTAMA -->
+    <div class="container" id="mainBox">
+        <!-- TAHAP 1: INPUT NAMA -->
+        <div id="step1">
+            <h2>Hai, Siapa namamu? 😊</h2>
+            <input type="text" id="namaInput" placeholder="Ketik nama lengkap/panggilanmu...">
+            <br>
+            <button onclick="mulaiCerita()">Lanjut →</button>
+        </div>
+
+        <!-- TAHAP 2: ALUR CERITA PANJANG -->
+        <div id="step2" class="hidden">
+            <h2 id="sapaan"></h2>
+            <p class="story-text" id="teksCerita">Memuat pesan...</p>
+            <button id="btnNext" onclick="nextSlide()">Klik untuk Lanjut 🤍</button>
+            
+            <!-- TAHAP 3: PILIHAN DI AKHIR CERITA -->
+            <div id="pilihanAkhir" class="hidden btn-group">
+                <button class="btn-yes" onclick="aksiYa()">Mau Banget! 🥰</button>
+                <button class="btn-no" id="btnNo" onmouseover="hindariTombol()">Nggak Mau 😜</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let namaUser = "";
+        let currentSlide = 0;
+        let cerita = [];
+
+        function mulaiCerita() {
+            namaUser = document.getElementById("namaInput").value.trim();
+            
+            if (namaUser === "") {
+                alert("Isi namanya dulu dong manis! 😉");
+                return;
+            }
+
+            // Kumpulan teks cerita panjang yang akan muncul bergantian
+            cerita = [
+                "Sebenarnya, aku udah lama mau ngomong ini ke kamu...",
+                "Setiap kali ngeliat kamu, entah kenapa duniaku rasanya jadi jauh lebih cerah dari biasanya.",
+                "Kamu itu punya kombinasi langka: baik, lucu, dan senyum kamu itu selalu berhasil bikin aku kepikiran seharian.",
+                `Makasih ya ${namaUser} udah hadir dan jadi orang yang selalu menyenangkan di mataku.`,
+                "Aku bersyukur banget bisa kenal sama orang cantik kamu.",
+                "Lewat codingan sederhana ini, aku cuma mau mastiin kalau hari ini kamu bahagia.",
+                "Terakhir... boleh gak kalau aku minta waktu kamu lebih sering lagi buat ngobrol ke depannya? ✨"
+            ];
+
+            // Pindah tampilan dari input nama ke tempat cerita
+            document.getElementById("step1").classList.add("hidden");
+            document.getElementById("step2").classList.remove("hidden");
+            document.getElementById("sapaan").innerText = `Hai, ${namaUser} ✨`;
+            
+            tampilkanSlide();
+        }
+
+        function tampilkanSlide() {
+            document.getElementById("teksCerita").innerText = cerita[currentSlide];
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            if (currentSlide < cerita.length) {
+                tampilkanSlide();
+                
+                // Jika sudah di slide terakhir, ubah tombol menjadi pilihan "Ya/Tidak"
+                if (currentSlide === cerita.length - 1) {
+                    document.getElementById("btnNext").classList.add("hidden");
+                    document.getElementById("pilihanAkhir").classList.remove("hidden");
+                }
+            }
+        }
+
+        // Fungsi jika dia klik "Mau Banget!"
+        function aksiYa() {
+            alert(`Yaaay! Makasih banyak ya ${namaUser} ❤️. Nanti kita ngobrol lagi ya!`);
+            window.location.reload(); // Reset ulang halaman
+        }
+
+        // Fitur interaktif: Tombol "Nggak Mau" akan menghindar/pindah tempat saat didekati kursor
+        function hindariTombol() {
+            const btnNo = document.getElementById("btnNo");
+            // Mengacak posisi tombol di dalam area layar
+            const x = Math.random() * (window.innerWidth - btnNo.offsetWidth - 50);
+            const y = Math.random() * (window.innerHeight - btnNo.offsetHeight - 50);
+            
+            btnNo.style.position = "absolute";
+            btnNo.style.left = x + "px";
+            btnNo.style.top = y + "px";
+        }
+    </script>
+</body>
+</html>
